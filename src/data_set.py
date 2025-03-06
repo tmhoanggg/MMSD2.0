@@ -19,19 +19,18 @@ class MyDataset(Dataset):
         cnt = 0
         data_set=dict()
         if mode in ["train"]:
-            print(WORKING_PATH)
             f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
             datas = json.load(f1)
             for data in datas:
                 if limit != None and cnt >= limit:
                     break
 
-                image = data['image_id']
-                sentence = data['text']
+                image = data['image']
+                sentence = data['caption']
                 label = data['label']
  
                 if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
-                    data_set[int(image)]={"text":sentence, 'label': label}
+                    data_set[int(image)]={"caption":sentence, 'label': label}
                     cnt += 1
                     
         
@@ -39,12 +38,12 @@ class MyDataset(Dataset):
             f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"), 'r',encoding='utf-8')
             datas = json.load(f1)
             for data in datas:
-                image = data['image_id']
-                sentence = data['text']
+                image = data['image']
+                sentence = data['caption']
                 label = data['label']
 
                 if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
-                    data_set[int(image)]={"text":sentence, 'label': label}
+                    data_set[int(image)]={"caption":sentence, 'label': label}
                     cnt += 1
         return data_set
 
