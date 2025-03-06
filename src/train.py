@@ -90,9 +90,9 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
             optimizer.zero_grad()
 
         wandb.log({'train_loss': sum_loss/sum_step})
-        _, dev_f1 ,dev_precision,dev_recall = evaluate_acc_f1(args, model, device, dev_data, processor, macro=True, mode='dev')
+        dev_f1 ,dev_precision, dev_recall = evaluate_acc_f1(args, model, device, dev_data, processor, macro=True, mode='dev')
         wandb.log({'dev_f1': dev_f1, 'dev_precision': dev_precision, 'dev_recall': dev_recall})
-        logging.info("i_epoch is {}, dev_f1 is {}, dev_precision is {}, dev_recall is {}".format(i_epoch, dev_f1, dev_precision, dev_recall))
+        print(f"i_epoch is {i_epoch}, dev_f1 is {dev_f1}, dev_precision is {dev_precision}, dev_recall is {dev_recall}")
 
         if dev_f1 > max_f1:
             max_f1 = dev_f1
@@ -103,9 +103,9 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
             model_to_save = (model.module if hasattr(model, "module") else model)
             torch.save(model_to_save.state_dict(), os.path.join(path_to_save, 'model.pt'))
 
-            _, test_f1,test_precision,test_recall = evaluate_acc_f1(args, model, device, test_data, processor, macro=True, mode='test')
+            test_f1, test_precision, test_recall = evaluate_acc_f1(args, model, device, test_data, processor, macro=True, mode='test')
             wandb.log({'test_f1': test_f1, 'test_precision': test_precision,'test_recall': test_recall})
-            logging.info("i_epoch is {}, test_acc is {}, test_f1 is {}, test_precision is {}, test_recall is {}".format(i_epoch, test_f1, test_precision, test_recall))
+            print(f"i_epoch is {i_epoch}, test_f1 is {test_f1}, test_precision is {test_precision}, test_recall is {test_recall}")
 
         torch.cuda.empty_cache()
     logger.info('Train done')
@@ -152,14 +152,12 @@ def evaluate_acc_f1(args, model, device, data, processor, macro=True, pre = None
                 label = t_targets_all.cpu().numpy().tolist()
                 for x,y,z in zip(predict,label):
                     fout.write(str(x) + str(y) +z+ '\n')
-        if not macro:   
-            acc = n_correct / n_total
+        if not macro:
             f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), average='micro')
             precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='micro')
             recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='micro')
         else:
-            acc = n_correct / n_total
             f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), average='macro')
             precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='macro')
             recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='macro')
-        return acc, f1, precision, recall
+        return f1, precision, recall
