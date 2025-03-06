@@ -13,7 +13,9 @@ class MyDataset(Dataset):
         self.data = self.load_data(mode, limit)
         self.image_ids=list(self.data.keys())
         for id in self.data.keys():
-            self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(id))
+            print("ID: ", id)
+            #self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(id))
+            self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image/dataset_image", self.data[id]["image"])
     
     def load_data(self, mode, limit):
         cnt = 0
