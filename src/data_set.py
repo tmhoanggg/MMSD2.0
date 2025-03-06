@@ -29,7 +29,7 @@ class MyDataset(Dataset):
                 sentence = data['text']
                 label = data['label']
  
-                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image", str(image)+".jpg")):
+                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
                     data_set[int(image)]={"text":sentence, 'label': label}
                     cnt += 1
                     
@@ -42,7 +42,7 @@ class MyDataset(Dataset):
                 sentence = data['text']
                 label = data['label']
 
-                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image", str(image)+".jpg")):
+                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
                     data_set[int(image)]={"text":sentence, 'label': label}
                     cnt += 1
         return data_set
