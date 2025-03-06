@@ -19,6 +19,7 @@ class MyDataset(Dataset):
         cnt = 0
         data_set=dict()
         if mode in ["train"]:
+            print(WORKING_PATH)
             f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
             datas = json.load(f1)
             for data in datas:
