@@ -11,6 +11,7 @@ from transformers import CLIPProcessor
 import wandb
 import pickle
 from PIL import ImageFile
+from kaggle_secrets import UserSecretsClient
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def set_args():
@@ -62,7 +63,8 @@ def main():
     
 
     # Đăng nhập WanDB
-    wandb_key = os.getenv("WANDB_API_KEY")  # Lấy API Key từ biến môi trường
+    user_secrets = UserSecretsClient()
+    wandb_key = user_secrets.get_secret("WANDB_API_KEY")  # Lấy API Key kaggle secret
     if wandb_key:
         wandb.login(key=wandb_key)
     else:
