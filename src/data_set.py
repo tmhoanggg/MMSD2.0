@@ -28,37 +28,59 @@ class MyDataset(Dataset):
             f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
             datas = json.load(f1)
             #for data in datas:
-            for data in datas.values():
+            for key, data in datas.items():
                 if limit != None and cnt >= limit:
                     break
 
                 # image = data['image']
                 # sentence = data['caption']
                 # label = data['label']
-                image = data.get('image')
-                sentence = data.get('caption')
-                label = label_mapping[data.get('label')]
+                file_name = data['image']
+                sentence = data['caption']
+                label = label_mapping[data['label']]
  
-                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
-                    data_set[int(image)]={"caption":sentence, 'label': label}
-                    cnt += 1
+                # if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
+                #     data_set[int(image)]={"caption":sentence, 'label': label}
+                #     cnt += 1
+                cur_img_path = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(file_name)+".jpg")
+                if not os.path.exists(cur_img_path):
+                    print(f"{cur_img_path} not found!")
+                    continue
+                
+                data_set[key] = {
+                    "image": file_name,
+                    "caption": sentence,
+                    "label": label
+                }
+                cnt += 1
                     
         
         if mode in ["test", "val"]:
             f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"), 'r',encoding='utf-8')
             datas = json.load(f1)
             #for data in datas:
-            for data in datas.values():
+            for key, data in datas.items():
                 # image = data['image']
                 # sentence = data['caption']
                 # label = data['label']
-                image = data.get('image')
-                sentence = data.get('caption')
-                label = label_mapping[data.get('label')]
+                file_name = data['image']
+                sentence = data['caption']
+                label = label_mapping[data['label']]
 
-                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
-                    data_set[int(image)]={"caption":sentence, 'label': label}
-                    cnt += 1
+                # if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
+                #     data_set[int(image)]={"caption":sentence, 'label': label}
+                #     cnt += 1
+                cur_img_path = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(file_name)+".jpg")
+                if not os.path.exists(cur_img_path):
+                    print(f"Image {file_name} not found.")
+                    continue
+                
+                data_set[key] = {
+                    "image": file_name,
+                    "caption": sentence,
+                    "label": label
+                }
+                cnt += 1
         return data_set
 
 
