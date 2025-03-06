@@ -1,5 +1,5 @@
 import os
-from model import CLIPClassificationModel_transformer
+from model import MV_CLIP
 from transformers import CLIPProcessor
 from torch.utils.data import DataLoader
 import torch
@@ -86,7 +86,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() and int(args.device) >= 0 else "cpu")
 
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    model = CLIPClassificationModel_transformer(args)
+    model = MV_CLIP(args)
 
     test_data = MyDataset(mode='test', text_name=args.text_name, limit=None)
 

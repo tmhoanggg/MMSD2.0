@@ -64,7 +64,7 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
         raise Exception('Wrong Optimizer Name!!!')
 
 
-    max_acc = 0.
+    max_f1 = 0.
     for i_epoch in trange(0, int(args.num_train_epochs), desc="Epoch", disable=False):
         sum_loss = 0.
         sum_step = 0
@@ -90,12 +90,12 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
             optimizer.zero_grad()
 
         wandb.log({'train_loss': sum_loss/sum_step})
-        dev_acc, dev_f1 ,dev_precision,dev_recall = evaluate_acc_f1(args, model, device, dev_data, processor, mode='dev')
-        wandb.log({'dev_acc': dev_acc, 'dev_f1': dev_f1, 'dev_precision': dev_precision, 'dev_recall': dev_recall})
-        logging.info("i_epoch is {}, dev_acc is {}, dev_f1 is {}, dev_precision is {}, dev_recall is {}".format(i_epoch, dev_acc, dev_f1, dev_precision, dev_recall))
+        _, dev_f1 ,dev_precision,dev_recall = evaluate_acc_f1(args, model, device, dev_data, processor, macro=True, mode='dev')
+        wandb.log({'dev_f1': dev_f1, 'dev_precision': dev_precision, 'dev_recall': dev_recall})
+        logging.info("i_epoch is {}, dev_f1 is {}, dev_precision is {}, dev_recall is {}".format(i_epoch, dev_f1, dev_precision, dev_recall))
 
-        if dev_acc > max_acc:
-            max_acc = dev_acc
+        if dev_f1 > max_f1:
+            max_f1 = dev_f1
 
             path_to_save = os.path.join(args.output_dir, args.model)
             if not os.path.exists(path_to_save):
@@ -103,12 +103,9 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
             model_to_save = (model.module if hasattr(model, "module") else model)
             torch.save(model_to_save.state_dict(), os.path.join(path_to_save, 'model.pt'))
 
-            test_acc, test_f1,test_precision,test_recall = evaluate_acc_f1(args, model, device, test_data, processor,macro = True, mode='test')
-            _, test_f1_,test_precision_,test_recall_ = evaluate_acc_f1(args, model, device, test_data, processor, mode='test')
-            wandb.log({'test_acc': test_acc, 'macro_test_f1': test_f1,
-                     'macro_test_precision': test_precision,'macro_test_recall': test_recall, 'micro_test_f1': test_f1_,
-                     'micro_test_precision': test_precision_,'micro_test_recall': test_recall_})
-            logging.info("i_epoch is {}, test_acc is {}, macro_test_f1 is {}, macro_test_precision is {}, macro_test_recall is {}, micro_test_f1 is {}, micro_test_precision is {}, micro_test_recall is {}".format(i_epoch, test_acc, test_f1, test_precision, test_recall, test_f1_, test_precision_, test_recall_))
+            _, test_f1,test_precision,test_recall = evaluate_acc_f1(args, model, device, test_data, processor, macro=True, mode='test')
+            wandb.log({'test_f1': test_f1, 'test_precision': test_precision,'test_recall': test_recall})
+            logging.info("i_epoch is {}, test_acc is {}, test_f1 is {}, test_precision is {}, test_recall is {}".format(i_epoch, test_f1, test_precision, test_recall))
 
         torch.cuda.empty_cache()
     logger.info('Train done')
@@ -157,12 +154,12 @@ def evaluate_acc_f1(args, model, device, data, processor, macro=True, pre = None
                     fout.write(str(x) + str(y) +z+ '\n')
         if not macro:   
             acc = n_correct / n_total
-            f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu())
-            precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu())
-            recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu())
+            f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), average='micro')
+            precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='micro')
+            recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='micro')
         else:
             acc = n_correct / n_total
-            f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), labels=[0, 1],average='macro')
-            precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu(), labels=[0, 1],average='macro')
-            recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu(), labels=[0, 1],average='macro')
-        return acc, f1 ,precision,recall
+            f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), average='macro')
+            precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='macro')
+            recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='macro')
+        return acc, f1, precision, recall
