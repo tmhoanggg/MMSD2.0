@@ -25,7 +25,7 @@ class MultimodalEncoder(nn.Module):
 
 
 class MV_CLIP(nn.Module):
-    def __init__(self, args):
+    def __init__(self, args, class_weights=None):
         super(MV_CLIP, self).__init__()
         self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
         self.config = BertConfig.from_pretrained("bert-base-uncased")
@@ -51,7 +51,7 @@ class MV_CLIP(nn.Module):
         self.classifier_text = nn.Linear(args.text_size, args.label_number)
         self.classifier_image = nn.Linear(args.image_size, args.label_number)
 
-        self.loss_fct = nn.CrossEntropyLoss()
+        self.loss_fct = nn.CrossEntropyLoss(weight=class_weights)
         self.att = nn.Linear(args.text_size, 1, bias=False)
 
     def forward(self, inputs, labels):

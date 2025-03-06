@@ -16,6 +16,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def set_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--class_weights', default=False, type=bool, help='class weights choice')
     parser.add_argument('--augmentation', default=False, type=bool, help='data augmentation choice')
     parser.add_argument('--device', default='1', type=str, help='device number')
     parser.add_argument('--model', default='MV_CLIP', type=str, help='the model name', choices=['MV_CLIP'])
@@ -42,6 +43,18 @@ def set_args():
     parser.add_argument('--limit', default=None, type=int, help='the limited number of training examples')
     parser.add_argument('--seed', type=int, default=42, help='random seed')
     return parser.parse_args()
+
+
+def compute_class_weights(args, train_data):
+    class_counts = torch.zeros(args.label_number)
+
+    for data in train_data:
+        _, _, label, _ = data
+        class_counts[label] += 1
+
+    total_samples = class_counts.sum().item()
+    class_weights = total_samples / (class_counts * len(class_counts))
+    return class_weights
 
 
 def seed_everything(seed=42):
@@ -84,9 +97,16 @@ def main():
     dev_data = MyDataset(mode='val', text_name=args.text_name, limit=None)
     test_data = MyDataset(mode='test', text_name=args.text_name, limit=None)
 
+    # Add class weights
+    if args.class_weights:
+        class_weights = compute_class_weights(args, train_data)
+    else:
+        class_weights = torch.ones(args.label_number)
+    class_weights = class_weights.to(device)
+
     if args.model == 'MV_CLIP':
         processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-        model = MV_CLIP(args)
+        model = MV_CLIP(args, class_weights=class_weights)
     else:
         raise RuntimeError('Error model name!')
 
