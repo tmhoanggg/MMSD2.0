@@ -59,6 +59,16 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() and int(args.device) >= 0 else "cpu")
 
     seed_everything(args.seed)
+    
+
+    # Đăng nhập WanDB
+    wandb_key = os.getenv("WANDB_API_KEY")  # Lấy API Key từ biến môi trường
+    if wandb_key:
+        wandb.login(key=wandb_key)
+    else:
+        print("⚠️ Warning: WANDB_API_KEY is not set. WandB may not work properly.")
+
+
 
     wandb.init(
         project="MMSD2.0",
