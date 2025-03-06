@@ -80,7 +80,7 @@ def main():
     wandb.watch_called = False  
 
     train_data = MyDataset(mode='train', text_name=args.text_name, limit=None)
-    dev_data = MyDataset(mode='valid', text_name=args.text_name, limit=None)
+    dev_data = MyDataset(mode='val', text_name=args.text_name, limit=None)
     test_data = MyDataset(mode='test', text_name=args.text_name, limit=None)
 
     if args.model == 'MV_CLIP':

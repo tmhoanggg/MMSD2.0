@@ -44,7 +44,7 @@ class MyDataset(Dataset):
                     cnt += 1
                     
         
-        if mode in ["test","valid"]:
+        if mode in ["test", "val"]:
             f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"), 'r',encoding='utf-8')
             datas = json.load(f1)
             #for data in datas:
