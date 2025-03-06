@@ -18,16 +18,26 @@ class MyDataset(Dataset):
     def load_data(self, mode, limit):
         cnt = 0
         data_set=dict()
+        label_mapping = {
+            "not-sarcasm": 0,
+            "multi-sarcasm": 1,
+            "text-sarcasm": 2,
+            "image-sarcasm": 3
+        }
         if mode in ["train"]:
             f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
             datas = json.load(f1)
-            for data in datas:
+            #for data in datas:
+            for data in datas.values():
                 if limit != None and cnt >= limit:
                     break
 
-                image = data['image']
-                sentence = data['caption']
-                label = data['label']
+                # image = data['image']
+                # sentence = data['caption']
+                # label = data['label']
+                image = data.get('image')
+                sentence = data.get('caption')
+                label = label_mapping[data.get('label')]
  
                 if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
                     data_set[int(image)]={"caption":sentence, 'label': label}
@@ -37,10 +47,14 @@ class MyDataset(Dataset):
         if mode in ["test","valid"]:
             f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"), 'r',encoding='utf-8')
             datas = json.load(f1)
-            for data in datas:
-                image = data['image']
-                sentence = data['caption']
-                label = data['label']
+            #for data in datas:
+            for data in datas.values():
+                # image = data['image']
+                # sentence = data['caption']
+                # label = data['label']
+                image = data.get('image')
+                sentence = data.get('caption')
+                label = label_mapping[data.get('label')]
 
                 if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
                     data_set[int(image)]={"caption":sentence, 'label': label}
@@ -80,4 +94,3 @@ class MyDataset(Dataset):
             label_list.append(instance[2])
             id_list.append(instance[3])
         return text_list, image_list, label_list, id_list
-
