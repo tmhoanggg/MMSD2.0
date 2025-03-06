@@ -8,8 +8,9 @@ logger = logging.getLogger(__name__)
 WORKING_PATH="/kaggle/input/full-uit-multimodal-sarcasm-dataset"
 
 class MyDataset(Dataset):
-    def __init__(self, mode, text_name, limit=None):
+    def __init__(self, mode, text_name, limit=None, augmentation=False):
         self.text_name = text_name
+        self.augmentation = augmentation
         self.data = self.load_data(mode, limit)
         self.image_ids=list(self.data.keys())
         for id in self.data.keys():
@@ -26,8 +27,11 @@ class MyDataset(Dataset):
             "image-sarcasm": 3
         }
         if mode in ["train"]:
-            #f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
-            f1= open(os.path.join(WORKING_PATH, self.text_name, "train_augmented.json"),'r',encoding='utf-8')
+            if self.augmentation:
+                f1= open(os.path.join(WORKING_PATH, self.text_name, "train_augmented.json"),'r',encoding='utf-8')
+            else:
+                f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
+            
             datas = json.load(f1)
             #for data in datas:
             for key, data in datas.items():

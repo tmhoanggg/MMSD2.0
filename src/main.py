@@ -16,6 +16,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def set_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--augmentation', default=False, type=bool, help='data augmentation choice')
     parser.add_argument('--device', default='1', type=str, help='device number')
     parser.add_argument('--model', default='MV_CLIP', type=str, help='the model name', choices=['MV_CLIP'])
     parser.add_argument('--text_name', default='text_json_final', type=str, help='the text data folder name')
@@ -79,7 +80,7 @@ def main():
     )
     wandb.watch_called = False  
 
-    train_data = MyDataset(mode='train', text_name=args.text_name, limit=None)
+    train_data = MyDataset(mode='train', text_name=args.text_name, limit=None, augmentation=args.augmentation)
     dev_data = MyDataset(mode='val', text_name=args.text_name, limit=None)
     test_data = MyDataset(mode='test', text_name=args.text_name, limit=None)
 
