@@ -13,7 +13,6 @@ class MyDataset(Dataset):
         self.data = self.load_data(mode, limit)
         self.image_ids=list(self.data.keys())
         for id in self.data.keys():
-            print("ID: ", id)
             #self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(id))
             self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image/dataset_image", self.data[id]["image"])
     
@@ -72,7 +71,7 @@ class MyDataset(Dataset):
                 # if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(image)+".jpg")):
                 #     data_set[int(image)]={"caption":sentence, 'label': label}
                 #     cnt += 1
-                cur_img_path = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(file_name)+".jpg")
+                cur_img_path = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(file_name))
                 if not os.path.exists(cur_img_path):
                     print(f"Image {file_name} not found.")
                     continue
