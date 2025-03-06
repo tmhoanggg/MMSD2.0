@@ -5,7 +5,7 @@ from PIL import Image
 import json
 
 logger = logging.getLogger(__name__)
-WORKING_PATH="/kaggle/input/full-uit-multimodal-sarcasm-dataset/dataset_image"
+WORKING_PATH="/kaggle/input/full-uit-multimodal-sarcasm-dataset"
 
 class MyDataset(Dataset):
     def __init__(self, mode, text_name, limit=None):
@@ -13,7 +13,7 @@ class MyDataset(Dataset):
         self.data = self.load_data(mode, limit)
         self.image_ids=list(self.data.keys())
         for id in self.data.keys():
-            self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image", str(id)+".jpg")
+            self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image/dataset_image", str(id)+".jpg")
     
     def load_data(self, mode, limit):
         cnt = 0
