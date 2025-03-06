@@ -65,7 +65,7 @@ class MyDataset(Dataset):
     def image_loader(self,id):
         return Image.open(self.data[id]["image_path"])
     def text_loader(self,id):
-        return self.data[id]["text"]
+        return self.data[id]["caption"]
 
 
     def __getitem__(self, index):
