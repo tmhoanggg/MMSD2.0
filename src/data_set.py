@@ -5,7 +5,7 @@ from PIL import Image
 import json
 
 logger = logging.getLogger(__name__)
-WORKING_PATH="../data"
+WORKING_PATH="/kaggle/input/full-uit-multimodal-sarcasm-dataset/dataset_image"
 
 class MyDataset(Dataset):
     def __init__(self, mode, text_name, limit=None):
@@ -13,13 +13,13 @@ class MyDataset(Dataset):
         self.data = self.load_data(mode, limit)
         self.image_ids=list(self.data.keys())
         for id in self.data.keys():
-            self.data[id]["image_path"] = os.path.join(WORKING_PATH,"dataset_image",str(id)+".jpg")
+            self.data[id]["image_path"] = os.path.join(WORKING_PATH, "dataset_image", str(id)+".jpg")
     
     def load_data(self, mode, limit):
         cnt = 0
         data_set=dict()
         if mode in ["train"]:
-            f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"),'r',encoding='utf-8')
+            f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
             datas = json.load(f1)
             for data in datas:
                 if limit != None and cnt >= limit:
@@ -29,20 +29,20 @@ class MyDataset(Dataset):
                 sentence = data['text']
                 label = data['label']
  
-                if os.path.isfile(os.path.join(WORKING_PATH,"dataset_image",str(image)+".jpg")):
+                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image", str(image)+".jpg")):
                     data_set[int(image)]={"text":sentence, 'label': label}
                     cnt += 1
                     
         
         if mode in ["test","valid"]:
-            f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"),'r',encoding='utf-8')
+            f1= open(os.path.join(WORKING_PATH, self.text_name ,mode+".json"), 'r',encoding='utf-8')
             datas = json.load(f1)
             for data in datas:
                 image = data['image_id']
                 sentence = data['text']
                 label = data['label']
 
-                if os.path.isfile(os.path.join(WORKING_PATH,"dataset_image",str(image)+".jpg")):
+                if os.path.isfile(os.path.join(WORKING_PATH, "dataset_image", str(image)+".jpg")):
                     data_set[int(image)]={"text":sentence, 'label': label}
                     cnt += 1
         return data_set
@@ -59,7 +59,7 @@ class MyDataset(Dataset):
         text = self.text_loader(id)
         image_feature = self.image_loader(id)
         label = self.data[id]["label"]
-        return text,image_feature, label, id
+        return text, image_feature, label, id
 
     def __len__(self):
         return len(self.image_ids)

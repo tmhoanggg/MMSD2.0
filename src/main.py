@@ -22,7 +22,7 @@ def set_args():
     parser.add_argument('--num_train_epochs', default=10, type=int, help='number of train epoched')
     parser.add_argument('--train_batch_size', default=32, type=int, help='batch size in train phase')
     parser.add_argument('--dev_batch_size', default=32, type=int, help='batch size in dev phase')
-    parser.add_argument('--label_number', default=2, type=int, help='the number of classification labels')
+    parser.add_argument('--label_number', default=4, type=int, help='the number of classification labels')
     parser.add_argument('--text_size', default=512, type=int, help='text hidden size')
     parser.add_argument('--image_size', default=768, type=int, help='image hidden size')
     parser.add_argument("--adam_epsilon", default=1e-8, type=float, help="Epsilon for Adam optimizer.")
