@@ -27,7 +27,8 @@ class MultimodalEncoder(nn.Module):
 class MV_CLIP(nn.Module):
     def __init__(self, args, class_weights=None):
         super(MV_CLIP, self).__init__()
-        self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        #self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        self.model = CLIPModel.from_pretrained("openai/clip-vit-large-patch14")
         self.config = BertConfig.from_pretrained("bert-base-uncased")
         self.config.hidden_size = 768
         self.config.num_attention_heads = 12
