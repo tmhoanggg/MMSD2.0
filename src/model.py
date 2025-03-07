@@ -27,11 +27,11 @@ class MultimodalEncoder(nn.Module):
 class MV_CLIP(nn.Module):
     def __init__(self, args, class_weights=None):
         super(MV_CLIP, self).__init__()
-        #self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-        self.model = CLIPModel.from_pretrained("openai/clip-vit-large-patch14")
+        self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        #self.model = CLIPModel.from_pretrained("openai/clip-vit-large-patch14")
         self.config = BertConfig.from_pretrained("bert-base-uncased")
-        self.config.hidden_size = 768
-        self.config.num_attention_heads = 12
+        self.config.hidden_size = 512
+        self.config.num_attention_heads = 8
         self.trans = MultimodalEncoder(self.config, layer_number=args.layers)
         if args.simple_linear:
             self.text_linear =  nn.Linear(args.text_size, args.text_size)
@@ -67,7 +67,7 @@ class MV_CLIP(nn.Module):
         text_embeds = self.model.text_projection(text_features)
         image_embeds = self.model.visual_projection(image_features)
         input_embeds = torch.cat((image_embeds, text_embeds), dim=1)
-        attention_mask = torch.cat((torch.ones(text_features.shape[0], 257).to(text_features.device), inputs['attention_mask']), dim=-1)
+        attention_mask = torch.cat((torch.ones(text_features.shape[0], 50).to(text_features.device), inputs['attention_mask']), dim=-1)
         extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
         extended_attention_mask = extended_attention_mask.to(dtype=next(self.parameters()).dtype)
         extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0

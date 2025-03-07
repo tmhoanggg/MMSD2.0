@@ -105,7 +105,7 @@ def main():
     class_weights = class_weights.to(device)
 
     if args.model == 'MV_CLIP':
-        processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
+        processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         model = MV_CLIP(args, class_weights=class_weights)
     else:
         raise RuntimeError('Error model name!')
