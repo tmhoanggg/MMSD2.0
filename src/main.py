@@ -98,7 +98,7 @@ def main():
     test_data = MyDataset(mode='test', text_name=args.text_name, limit=None)
 
     # Add class weights
-    if args.class_weights:
+    if args.class_weights == True:
         class_weights = compute_class_weights(args, train_data)
     else:
         class_weights = torch.ones(args.label_number)
