@@ -28,9 +28,9 @@ class MyDataset(Dataset):
         }
         if mode in ["train"]:
             if self.augmentation == True:
-                f1= open(os.path.join(WORKING_PATH, self.text_name, "train_augmented.json"),'r',encoding='utf-8')
+                f1= open(os.path.join(self.text_name, "train_augmented.json"),'r',encoding='utf-8')
             else:
-                f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"),'r',encoding='utf-8')
+                f1= open(os.path.join(self.text_name, mode+".json"),'r',encoding='utf-8')
             
             datas = json.load(f1)
             #for data in datas:
@@ -62,7 +62,7 @@ class MyDataset(Dataset):
                     
         
         if mode in ["test", "val"]:
-            f1= open(os.path.join(WORKING_PATH, self.text_name, mode+".json"), 'r',encoding='utf-8')
+            f1= open(os.path.join(self.text_name, mode+".json"), 'r',encoding='utf-8')
             datas = json.load(f1)
             #for data in datas:
             for key, data in datas.items():
