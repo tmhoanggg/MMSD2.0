@@ -27,7 +27,8 @@ class MyDataset(Dataset):
             "image-sarcasm": 3
         }
         if mode in ["train"]:
-            if self.augmentation == True:
+            print(self.augmentation)
+            if self.augmentation:
                 f1= open(os.path.join(self.text_name, "train_augmented.json"),'r',encoding='utf-8')
             else:
                 f1= open(os.path.join(self.text_name, mode+".json"),'r',encoding='utf-8')
