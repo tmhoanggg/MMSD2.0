@@ -160,4 +160,20 @@ def evaluate_acc_f1(args, model, device, data, processor, macro=True, pre = None
             f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), average='macro')
             precision =  metrics.precision_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='macro')
             recall = metrics.recall_score(t_targets_all.cpu(),t_outputs_all.cpu(), average='macro')
+
+
+        # Tính F1 cho từng class
+        class_f1 = metrics.f1_score(t_targets_all.cpu(), t_outputs_all.cpu(), average=None)
+        class_names = [str(i) for i in range(len(class_f1))]  # hoặc tên nhãn nếu bạn có
+
+        # In ra console
+        print(f"Per-class F1 ({mode}):")
+        for i, f1_score in enumerate(class_f1):
+            print(f"  Class {class_names[i]}: {f1_score:.4f}")
+
+        # Log vào wandb nếu là test
+        if mode == 'test':
+            for i, f1_score in enumerate(class_f1):
+                wandb.log({f'test_f1_class_{class_names[i]}': f1_score})
+
         return f1, precision, recall
